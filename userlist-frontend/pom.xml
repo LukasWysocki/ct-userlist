@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>pl.cloud</groupId>
+  <artifactId>userlist-frontend</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>userlist-frontend</name>
+  <description>Angular based web client managing a list of users</description>
+
+  <properties>
+    <node.version>v10.13.0</node.version>
+    <npm.version>6.4.1</npm.version>
+    <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
+    <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+    <maven.war.plugin.version>3.0.0</maven.war.plugin.version>
+    <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
+    <maven.resources.plugin.version>3.0.2</maven.resources.plugin.version>
+    <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
+    <maven-bundle-plugin-version>3.5.0</maven-bundle-plugin-version>
+  </properties>
+
+  <build>
+
+    <plugins>
+
+      <!-- clean /dist directory-->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven.clean.plugin.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}/dist</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <!-- execute command  "npm install" and "npm run build" -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend.maven.plugin.version}</version>
+        <configuration>
+          <workingDirectory>${basedir}</workingDirectory>
+          <installDirectory>${basedir}/temp</installDirectory>
+        </configuration>
+        <executions>
+          <!-- install nodejs and npm -->
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+
+          <!-- execute command "npm install" -->
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+
+
+          <!-- execute command "npm build-ui", create "/dist" directory-->
+          <execution>
+            <id>npm build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- copy the content of dist/ directory to build directory -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven.resources.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>default-copy-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <overwrite>true</overwrite>
+              <outputDirectory>${project.build.directory}/classes/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>dist</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>filter</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-war-plugin</artifactId>-->
+        <!--<version>${maven.war.plugin.version}</version>-->
+        <!--<configuration>-->
+          <!--<archive>-->
+            <!--<manifestFile>${basedir}/target/classes/META-INF/MANIFEST.MF</manifestFile>-->
+          <!--</archive>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
+
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven.deploy.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>default-deploy</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

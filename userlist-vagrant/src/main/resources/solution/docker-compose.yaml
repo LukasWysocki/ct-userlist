@@ -1,0 +1,39 @@
+version: "3"
+services:
+
+  mysql:
+    image: mysql:8.0.13
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - "./mysql/mysql-data:/var/lib/mysql"
+      - "./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    env_file: .env
+
+  backend:
+    image: openjdk:8
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - "./backend/app:/app"
+    working_dir: /app
+    environment:
+      - SPRING.DATASOURCE.URL=jdbc:mysql://mysql/users
+      - SPRING.DATASOURCE.USERNAME=${MYSQL_USER}
+      - SPRING.DATASOURCE.PASSWORD=${MYSQL_PASSWORD}
+    command: java -XX:MaxRAM=512m -jar userlist-backend-0.0.1-SNAPSHOT.jar
+
+  frontend:
+    image: nginx:1.15.6
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - "./frontend/conf.d:/etc/nginx/conf.d"
+      - "./frontend/dist:/usr/share/nginx/html"
