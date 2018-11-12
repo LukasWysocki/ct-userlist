@@ -47,6 +47,8 @@ Most (if not all) design choices where driven by desire to minimise the time req
 
 * Frontend was built based on Angular as that is what I'm recently using daily, hence also minimises time required for solution.
 
+* Frontend is built at this point without the `--prod` flag to stream line the debugging in case of errors. This can be changed by modifying the `userlist-frontend/pom.xml` execution `npm build` arguments to `run build -- --prod` 
+
 * Delivering the VM with nginx serving the solution was part of assignment. To minimise the manual work during testing and have the process easly repeatable it was automated using Vagrant, docker, and docker-compose. Using docker-compose allowed for easy testing without the VM and for repetable builds (using ubuntu locally, test assignment requires VM with debian).
  
 # Assessing the backend code quality

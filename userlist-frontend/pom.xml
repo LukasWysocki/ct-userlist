@@ -75,7 +75,7 @@
           </execution>
 
 
-          <!-- execute command "npm build-ui", create "/dist" directory-->
+          <!-- execute command "npm build", create "/dist" directory-->
           <execution>
             <id>npm build</id>
             <goals>
